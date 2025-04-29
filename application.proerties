@@ -69,21 +69,3 @@ After patching application team is saying application is not working?
 
 change number : ch0012456 for patching
 		ch0012456-01  change task1 = Linux team
-		ch0012456-02  change task2 = Backup team
-		ch0012456-03  change task3 = vmware team
-		ch0012456-04  change task4 = application team
-		ch0012456-05  change task5 = DB team
-
-	PMO team person create change with change tasks and assign change tasks to respective teams
-
-
-***** after patching server is not coming up? how you will fix it
-	i will verify error message in serial console and take neccesary action based on error message
-
-			mostly kernel panic or grub errors then
-				i will take machine into rescue mode and rebuild the kernel using 
-					dracut -f /boot/initramfs-kernelversion.img  kernelversion
-				also i will recreate the grub
-					grub2-mkconfig -o /boot/grub2/grub.cfg
-then will reboot the server
-
