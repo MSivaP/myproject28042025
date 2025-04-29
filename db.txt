@@ -1,0 +1,56 @@
+*****panel : could you please explain me patching procedure
+		we have PMO team who will co-ordinate the changes.
+	PMO team will schedule meeting for change implementation.
+		patching is scheduled for 10 servers. 
+	Step 1 : we join in  scheduled meeting and then we request backup team to complete backup for scheduled servers.
+	Step 2 : paralely we take the snapshot for all scheduled servers and disable the alerts.
+	Step 3 : We collect the prechecks and keep in the notepad 
+			kernel version, current os version, partitions information, volume group and lvs information and all.
+				uname -r;hostname;cat /etc/os-release;date;df -h;vgs;lvs;pvs;cat /etc/fstab
+	Step 4 : we request application and db team to stop the respective application in scheduled servers.
+		===========================================
+			scheduled servers = 7 are application severs
+				                     3 are db
+		who will stop the application in 7 servers? application team
+			which is first app or db while stopping? 
+				application ==> db
+			while starting
+			==========
+			start db ==> start application
+		===============================================
+	Step 5 : we reboot the shceduled servers once we get confirmation from application and db team once they stop application and db.			
+			this reboot is before patching to confirm no issues with server before patching.
+			if server is up that means no existing problems in server.
+		
+	Step 6 : if server is up then we verify is the server is integrated with satellite or not, if not integrated we integrate now. 
+			using subscripton-manager we register redhat server with satellite
+		if server is suse then we run bootstrap script to register server with suma manager.
+	Step 7 : now server is registered then we continue patching in scheduled servers
+			yum update    command for redhat servers
+				and zypper update for suse servers.
+		we observ the patching progress and reboot the servers once after patching.
+	Step 8 : once server is up after patching then we collect post checks and validate those post checks with prechecks. here mainly we verify
+			partitions are same and kernel version got changed and all verified.
+	Step 9 : if everything looks good like kernel version is updated and os version also updated then we request app and db team to start respective things
+			in scheduled severs.
+	Step 10 : we close change task if application working fine.
+		and logoff from meeting.
+
+ 
+After patching application team is saying application is not working?
+	first we boot with previous kernel and ask team to start now application.
+		if application is working with old kernel that means compatability between application and new kernel.
+		
+	roll back
+	=======	
+	using snapshot we just merge and ask application team to start the things
+
+*****panel will ask how you revert everything without merging snapshot?
+		step 1 : reboot and boot with old kernel
+			while booting select old kernel in grub screen and press enter
+		Step 2 : make sure old repository is configured in client machine
+			we enable old version repository using subscription-manager
+				subscription-manager --enable=<old repository id>
+		Step 3 :  remote the kernel protection file
+			rm -rf /etc/yum/protected.d/systemd.conf
+
